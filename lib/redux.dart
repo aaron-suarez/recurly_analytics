@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:async/async.dart';
 import 'package:redux/redux.dart';
 import 'package:recurly_analytics/api.dart';
+import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
 
 // store
 
@@ -108,6 +109,7 @@ class AppMiddleware implements MiddlewareClass<AppState> {
         _operation = CancelableOperation.fromFuture(api
             .getToken(action.email, action.password)
             .then((result) => store..dispatch(HandleCookieAction(result['cookie'], result['subdomain'])))
+            .then((result) => store..dispatch(NavigateToAction.replace("/home")))
             .catchError((e, s) => store..dispatch(ErrorAction())));
       });
     }
