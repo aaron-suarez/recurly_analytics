@@ -13,9 +13,7 @@ void main() {
         AppMiddleware(RecurlyApi()),
       ]);
 
-  final GlobalKey<NavigatorState> navigatorKey;
-
-  runApp(new MyApp(store: store, navigatorKey: navigatorKey));
+  runApp(new MyApp(store: store));
 }
 
 class MyApp extends StatelessWidget {
