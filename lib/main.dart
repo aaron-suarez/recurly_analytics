@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:recurly_analytics/login_page.dart';
@@ -11,11 +12,10 @@ void main() {
       initialState: AppState.initial(),
       middleware: [
         AppMiddleware(RecurlyApi()),
+        NavigationMiddleware<AppState>(),
       ]);
 
-  final GlobalKey<NavigatorState> navigatorKey;
-
-  runApp(new MyApp(store: store, navigatorKey: navigatorKey));
+  runApp(new MyApp(store: store));
 }
 
 class MyApp extends StatelessWidget {
@@ -24,9 +24,8 @@ class MyApp extends StatelessWidget {
     LoginPage.tag: (context) => LoginPage(),
     HomePage.tag: (context) => HomePage(),
   };
-  final GlobalKey<NavigatorState> navigatorKey;
 
-  MyApp({this.store, this.navigatorKey}) : super();
+  MyApp({this.store}) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +36,28 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.purple,
         ),
-      home: new LoginPage(),
+        navigatorKey: NavigatorHolder.navigatorKey,
+        onGenerateRoute: _getRoute,
+        home: new LoginPage(),
         routes: routes
       ),
     );}
+
+  Route _getRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case '/login':
+        return _buildRoute(settings, LoginPage());
+      case '/home':
+        return _buildRoute(settings, HomePage());
+      default:
+        return _buildRoute(settings, LoginPage());
+    }
+  }
+
+  MaterialPageRoute _buildRoute(RouteSettings settings, Widget builder) {
+    return new MaterialPageRoute(
+      settings: settings,
+      builder: (BuildContext context) => builder,
+    );
+  }
 }
