@@ -118,7 +118,7 @@ class AppMiddleware implements MiddlewareClass<AppState> {
             .getToken(action.email, action.password)
             .then((result) => store..dispatch(HandleCookieAction(result['cookie'], result['subdomain'])))
             .then((result) => store..dispatch(GetStatsAction()))
-            .then((result) => store..dispatch(NavigateToAction.replace("/home")))
+            .then((result) => store..dispatch(NavigateToAction.replace("/billing")))
             .catchError((e, s) => store..dispatch(ErrorAction())));
       });
     }
@@ -127,7 +127,7 @@ class AppMiddleware implements MiddlewareClass<AppState> {
       _operation = CancelableOperation.fromFuture(api
           .getBillingsStats(store.state.cookie, store.state.subdomain)
           .then((result) => store..dispatch(HandleStatsAction(result)))
-          .then((result) => store..dispatch(NavigateToAction.replace("/home")))
+          .then((result) => store..dispatch(NavigateToAction.replace("/billing")))
           .catchError((e, s) => store..dispatch(ErrorAction())));
     }
 
