@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:fcharts/fcharts.dart';
+import 'dart:math';
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'dart:convert';
 import 'dart:math';
 
@@ -52,32 +53,17 @@ class HomePage extends StatelessWidget {
 
     final tickInterval = statValMax / 10;
 
-    final xAxis = new ChartAxis<String>(
-      span: new ListSpan(stats.map((stat) => stat.date).toList()),
+    final seriesList = new charts.Series<DateStat, String>(
+      id: 'Subscription MRR',
+      colorFn: (_, __) => charts.MaterialPalette.purple.shadeDefault,
+      domainFn: (DateStat stats, _) => stats.date,
+      measureFn: (DateStat stats, _) => stats.amount,
+      data: stats,
     );
 
-    // make the y axis 10% larger than the max val
-    final yAxis = new ChartAxis<double>(
-      span: new DoubleSpan(0.0, (statValMax * 1.1)),
-      tickGenerator: IntervalTickGenerator.byN(tickInterval),
-    );
-
-    final bars = stats.map((stat) {
-      return new Bar<DateStat, String, double>(
-        xFn: (stat) => stat.date,
-        valueFn: (stat) => stat.amount,
-        fill: new PaintOptions.fill(color: Colors.green),
-      );
-    }).toList();
-
-    final chart = new AspectRatio(
-      aspectRatio: 2.0,
-      child: new BarChart<DateStat, String, double>(
-        data: stats,
-        xAxis: xAxis,
-        yAxis: yAxis,
-        bars: bars,
-      ),
+    final chart = new charts.BarChart(
+      [ seriesList ],
+      animate: true,
     );
 
     final body = Container(
