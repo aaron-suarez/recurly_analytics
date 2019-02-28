@@ -6,6 +6,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:recurly_analytics/billing_page.dart';
 import 'package:recurly_analytics/login_page.dart';
 import 'package:recurly_analytics/mrr_page.dart';
+import 'package:recurly_analytics/subscribers_page.dart';
 import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
 
 void main() {
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
   final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(),
     BillingPage.tag: (context) => BillingPage(),
-    MRRPage.tag: (context) => MRRPage()
+    MRRPage.tag: (context) => MRRPage(),
+    SubscribersPage.tag: (context) => SubscribersPage()
   };
 
   MyApp({this.store}) : super();
@@ -53,6 +55,8 @@ class MyApp extends StatelessWidget {
         return _buildRoute(settings, BillingPage());
       case '/mrr':
         return _buildRoute(settings, MRRPage());
+      case '/subscribers':
+        return _buildRoute(settings, SubscribersPage());
       default:
         return _buildRoute(settings, LoginPage());
     }

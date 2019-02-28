@@ -38,6 +38,13 @@ class RecurlyDrawer extends StatelessWidget {
               this.vm.onTap(GetMRRAction());
             },
           ),
+          new Divider(),
+          new ListTile(
+            title: new Text("Subscribers"),
+            onTap: () {
+              this.vm.onTap(GetSubscribersAction());
+            },
+          ),
         ]
       )
     );

@@ -49,6 +49,7 @@ class GetCookieAction {
 
 class GetStatsAction {}
 class GetMRRAction {}
+class GetSubscribersAction {}
 
 class LoadingAction {}
 
@@ -136,6 +137,14 @@ class AppMiddleware implements MiddlewareClass<AppState> {
           .getMRRStats(store.state.cookie, store.state.subdomain)
           .then((result) => store..dispatch(HandleStatsAction(result)))
           .then((result) => store..dispatch(NavigateToAction.replace("/mrr")))
+          .catchError((e, s) => store..dispatch(ErrorAction())));
+    }
+
+    if (action is GetSubscribersAction) {
+      _operation = CancelableOperation.fromFuture(api
+          .getSubscribersStats(store.state.cookie, store.state.subdomain)
+          .then((result) => store..dispatch(HandleStatsAction(result)))
+          .then((result) => store..dispatch(NavigateToAction.replace("/subscribers")))
           .catchError((e, s) => store..dispatch(ErrorAction())));
     }
 
