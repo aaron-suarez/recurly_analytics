@@ -48,6 +48,7 @@ class GetCookieAction {
 }
 
 class GetStatsAction {}
+class GetMRRAction {}
 
 class LoadingAction {}
 
@@ -79,11 +80,11 @@ AppState _onLoad(AppState state, LoadingAction action) => AppState.loading();
 
 AppState _onError(AppState state, ErrorAction action) => AppState.error();
 
-AppState _onReturnCookie(AppState state, HandleCookieAction action) => AppState.handleCookie(action.cookie, action.subdomain);
+AppState _onReturnCookie(AppState state, HandleCookieAction action) =>
+  AppState.handleCookie(action.cookie, action.subdomain);
 
-AppState _onReturnStats(AppState state, HandleStatsAction action) {
-  return AppState(cookie: state.cookie, stats: action.stats, isLoading: false);
-}
+AppState _onReturnStats(AppState state, HandleStatsAction action) =>
+  AppState(cookie: state.cookie, stats: action.stats, subdomain: state.subdomain, isLoading: false);
 
 // middleware
 
@@ -123,9 +124,18 @@ class AppMiddleware implements MiddlewareClass<AppState> {
     }
 
     if (action is GetStatsAction) {
-      _operation =CancelableOperation.fromFuture(api
-          .getStats(store.state.cookie, store.state.subdomain)
+      _operation = CancelableOperation.fromFuture(api
+          .getBillingsStats(store.state.cookie, store.state.subdomain)
           .then((result) => store..dispatch(HandleStatsAction(result)))
+          .then((result) => store..dispatch(NavigateToAction.replace("/home")))
+          .catchError((e, s) => store..dispatch(ErrorAction())));
+    }
+
+    if (action is GetMRRAction) {
+      _operation = CancelableOperation.fromFuture(api
+          .getMRRStats(store.state.cookie, store.state.subdomain)
+          .then((result) => store..dispatch(HandleStatsAction(result)))
+          .then((result) => store..dispatch(NavigateToAction.replace("/mrr")))
           .catchError((e, s) => store..dispatch(ErrorAction())));
     }
 

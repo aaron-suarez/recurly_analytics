@@ -13,9 +13,16 @@ class RecurlyApi {
     return "https://app.$rootDomain/login";
   }
 
-  Future<String> getStats(String cookie, String subdomain) async {
+  Future<String> getBillingsStats(String cookie, String subdomain) async {
     var urlBase = "https://$subdomain.$rootDomain";
     return http.get("$urlBase/analytics/stats/transactions?interval=month", headers: { "cookie": cookie, "Content-Type": 'application/json'} )
+        .then((response) => response.body);
+  }
+
+  Future<String> getMRRStats(String cookie, String subdomain) async {
+    var urlBase = "https://$subdomain.$rootDomain";
+    return http.get("$urlBase/analytics/stats/mrr/total?discounts=true&failed_invoices=true&interval=month",
+        headers: { "cookie": cookie, "Content-Type": 'application/json'} )
         .then((response) => response.body);
   }
 

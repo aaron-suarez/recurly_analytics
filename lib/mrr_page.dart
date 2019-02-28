@@ -17,8 +17,8 @@ class DateStat {
   }
 }
 
-class HomePage extends StatelessWidget {
-  static String tag = 'home-page';
+class MRRPage extends StatelessWidget {
+  static String tag = 'mrr-page';
 
   List<DateStat> parseResponse(String response) {
 
@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
 
     return jsonResponse.map((element) {
       final date = element['date'];
-      final double usdPaymentAmount = element['currencies']['USD']['paymentAmount'];
+      final double usdPaymentAmount = element['currencies']['USD']['amount'];
 
       return new DateStat(date, usdPaymentAmount);
     }).toList();
@@ -34,20 +34,20 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new StoreConnector<AppState, HomeViewModel>(
+    return new StoreConnector<AppState, MRRViewModel>(
       converter: (store) {
-          return HomeViewModel(
+          return MRRViewModel(
             state: store.state,
             onTap: (action) => store.dispatch(action)
           );
       },
-      builder: (BuildContext context, HomeViewModel vm) {
+      builder: (BuildContext context, MRRViewModel vm) {
 
         if (vm.state.stats == null || vm.state.stats == "") {
           // loading screen
           return Scaffold(
             appBar: AppBar(
-              title: Text('Billings (loading)'),
+              title: Text('MRR (loading)'),
             ),
             backgroundColor: Colors.white,
             body: Align(
@@ -87,7 +87,7 @@ class HomePage extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text('Billings'),
+            title: Text('MRR'),
           ),
           backgroundColor: Colors.white,
           body: body,
@@ -117,9 +117,9 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class HomeViewModel {
+class MRRViewModel {
   final AppState state;
   final void Function(dynamic action) onTap;
 
-  HomeViewModel({this.state, this.onTap});
+  MRRViewModel({this.state, this.onTap});
 }
