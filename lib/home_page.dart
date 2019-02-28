@@ -56,7 +56,9 @@ class HomePage extends StatelessWidget {
               title: Text('Billings (loading)'),
             ),
             backgroundColor: Colors.white,
-            body: new CircularProgressIndicator()
+            body: Align(
+              child: new CircularProgressIndicator()
+            )
           );
 
         }
