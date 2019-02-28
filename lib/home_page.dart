@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:fcharts/fcharts.dart';
 import 'dart:convert';
+import 'dart:math';
 
 enum Level {
   Very,
@@ -46,54 +47,46 @@ class HomePage extends StatelessWidget {
     final stats = parseResponse(billingsJson);
     print("stats: " + stats.toString());
 
-    final lorem = Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Text(
-        "hello world",
-        style: TextStyle(fontSize: 16.0, color: Colors.black45),
-      ),
+    // get the maximum value to scale the chart appropriately
+    final statValMax = stats.map((stat) => stat.amount).toList().reduce(max);
+
+    final tickInterval = statValMax / 10;
+
+    final xAxis = new ChartAxis<String>(
+      span: new ListSpan(stats.map((stat) => stat.date).toList()),
     );
 
-    // set x-axis here so that both lines can use it
-    final xAxis = new ChartAxis<String>();
+    // make the y axis 10% larger than the max val
+    final yAxis = new ChartAxis<double>(
+      span: new DoubleSpan(0.0, (statValMax * 1.1)),
+      tickGenerator: IntervalTickGenerator.byN(tickInterval),
+    );
 
-    AspectRatio x =  new AspectRatio(
-      aspectRatio: 4 / 3,
-      child: new LineChart(
-        chartPadding: new EdgeInsets.fromLTRB(60.0, 20.0, 30.0, 30.0),
-        lines: [
-          // size line
-          new Line<DateStat, String, double>(
-            data: stats,
-            xFn: (stat) => stat.date,
-            yFn: (stat) => stat.amount,
-            xAxis: xAxis,
-            yAxis: new ChartAxis(
-              span: new DoubleSpan(0.0, 50000.0),
-              opposite: true,
-              tickGenerator: IntervalTickGenerator.byN(1),
-              paint: const PaintOptions.stroke(color: Colors.green),
-            ),
-            marker: const MarkerOptions(
-              paint: const PaintOptions.fill(color: Colors.green),
-              shape: MarkerShapes.square,
-            ),
-            stroke: const PaintOptions.stroke(color: Colors.green),
-            legend: new LegendItem(
-              paint: const PaintOptions.fill(color: Colors.green),
-              text: 'Size',
-            ),
-          ),
-        ],
+    final bars = stats.map((stat) {
+      return new Bar<DateStat, String, double>(
+        xFn: (stat) => stat.date,
+        valueFn: (stat) => stat.amount,
+        fill: new PaintOptions.fill(color: Colors.green),
+      );
+    }).toList();
+
+    final chart = new AspectRatio(
+      aspectRatio: 2.0,
+      child: new BarChart<DateStat, String, double>(
+        data: stats,
+        xAxis: xAxis,
+        yAxis: yAxis,
+        bars: bars,
       ),
     );
 
     final body = Container(
       width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.all(28.0),
-      child: Column(
-        children: <Widget>[x],
-      ),
+      padding: EdgeInsets.only(top: 20.0, left: 10.0, bottom: 10.0),
+      child: Align(
+        alignment: Alignment.bottomLeft,
+        child: chart
+      )
     );
 
     return Scaffold(
