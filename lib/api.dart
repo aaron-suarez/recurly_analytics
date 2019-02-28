@@ -27,6 +27,13 @@ class RecurlyApi {
         .then((response) => response.body);
   }
 
+  Future<String> getSubscribersStats(String cookie, String subdomain) async {
+    var urlBase = "https://$subdomain.$rootDomain";
+    return http.get("$urlBase/analytics/stats/subscribers/reactivated?interval=month",
+        headers: { "cookie": cookie, "Content-Type": 'application/json'} )
+        .then((response) => response.body);
+  }
+
   Future<Map> getToken(String email, String password) async {
       final String csrfToken = await getCsrfToken();
       final String url = loginUrl();

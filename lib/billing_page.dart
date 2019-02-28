@@ -27,7 +27,11 @@ class BillingPage extends StatelessWidget {
 
     return jsonResponse.map((element) {
       final date = element['date'];
-      final double usdPaymentAmount = element['currencies']['USD']['paymentAmount'];
+      var currenciesElement = element['currencies'];
+      double usdPaymentAmount = 0;
+      if (currenciesElement != [] && currenciesElement != null) {
+        usdPaymentAmount = currenciesElement['USD']['paymentAmount'];
+      }
 
       return new DateStat(date, usdPaymentAmount);
     }).toList();

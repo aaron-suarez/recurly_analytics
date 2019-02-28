@@ -1,59 +1,53 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:recurly_analytics/redux.dart';
-import 'package:recurly_analytics/drawer.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:recurly_analytics/drawer.dart';
 
-class DateStat {
-
-  const DateStat(this.date, this.amount);
+class SubscribersStat {
+  const SubscribersStat(this.date, this.count);
 
   final String date;
-  final double amount;
+  final int count;
 
   @override
   String toString() {
-    return "DateStat(date: " + date + " amount: " + amount.toString() + ")";
+    return "SubscribersStat(date: " + date + " amount: " + count.toString() + ")";
   }
 }
 
-class MRRPage extends StatelessWidget {
-  static String tag = 'mrr-page';
+class SubscribersPage extends StatelessWidget {
+  static String tag = 'subscribers-page';
 
-  List<DateStat> parseResponse(String response) {
+  List<SubscribersStat> parseResponse(String response) {
 
     final List<dynamic> jsonResponse = json.decode(response);
 
     return jsonResponse.map((element) {
       final date = element['date'];
-      var currenciesElement = element['currencies'];
+      final int count = element['totalSubscribers'];
 
-      double usdPaymentAmount = 0;
-      if (currenciesElement != [] && currenciesElement != null) {
-        usdPaymentAmount = currenciesElement['USD']['amount'];
-      }
-
-      return new DateStat(date, usdPaymentAmount);
+      return new SubscribersStat(date, count);
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new StoreConnector<AppState, MRRViewModel>(
+    return new StoreConnector<AppState, SubscribersViewModel>(
       converter: (store) {
-          return MRRViewModel(
+          return SubscribersViewModel(
             state: store.state,
             onTap: (action) => store.dispatch(action)
           );
       },
-      builder: (BuildContext context, MRRViewModel vm) {
+      builder: (BuildContext context, SubscribersViewModel vm) {
 
         if (vm.state.stats == null || vm.state.stats == "") {
           // loading screen
           return Scaffold(
             appBar: AppBar(
-              title: Text('MRR (loading)'),
+              title: Text('Subscribers (loading)'),
             ),
             backgroundColor: Colors.white,
             body: Align(
@@ -63,17 +57,17 @@ class MRRPage extends StatelessWidget {
 
         }
 
-        List<DateStat> stats = parseResponse(vm.state.stats);
+        List<SubscribersStat> stats = parseResponse(vm.state.stats);
 
         if (stats.length > 6) {
           stats = stats.sublist(stats.length - 6);
         }
 
-        final seriesList = new charts.Series<DateStat, String>(
-          id: 'Subscription MRR',
+        final seriesList = new charts.Series<SubscribersStat, String>(
+          id: 'Subscribers',
           colorFn: (_, __) => charts.MaterialPalette.purple.shadeDefault,
-          domainFn: (DateStat stats, _) => stats.date.substring(0, 7),
-          measureFn: (DateStat stats, _) => stats.amount,
+          domainFn: (SubscribersStat stats, _) => stats.date.substring(0, 7),
+          measureFn: (SubscribersStat stats, _) => stats.count,
           data: stats,
         );
 
@@ -93,7 +87,7 @@ class MRRPage extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text('MRR'),
+            title: Text('Subscribers'),
           ),
           backgroundColor: Colors.white,
           body: body,
@@ -104,9 +98,9 @@ class MRRPage extends StatelessWidget {
   }
 }
 
-class MRRViewModel {
+class SubscribersViewModel {
   final AppState state;
   final void Function(dynamic action) onTap;
 
-  MRRViewModel({this.state, this.onTap});
+  SubscribersViewModel({this.state, this.onTap});
 }
