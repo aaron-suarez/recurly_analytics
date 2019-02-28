@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:recurly_analytics/login_page.dart';
-import 'package:recurly_analytics/home_page.dart';
-import 'package:recurly_analytics/redux.dart';
+import 'package:flutter/material.dart';
 import 'package:recurly_analytics/api.dart';
+import 'package:recurly_analytics/redux.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:recurly_analytics/home_page.dart';
+import 'package:recurly_analytics/login_page.dart';
+import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
 
 void main() {
   final store = new Store<AppState>(stateReducer,
