@@ -132,8 +132,9 @@ class AppMiddleware implements MiddlewareClass<AppState> {
 
     if (action is GetMRRAction) {
       _operation = CancelableOperation.fromFuture(api
-          .getBillingsStats(store.state.cookie, store.state.subdomain)
+          .getMRRStats(store.state.cookie, store.state.subdomain)
           .then((result) => store..dispatch(HandleStatsAction(result)))
+          .then((result) => store..dispatch(NavigateToAction.replace("/mrr")))
           .catchError((e, s) => store..dispatch(ErrorAction())));
     }
 
