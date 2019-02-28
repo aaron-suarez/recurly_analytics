@@ -15,7 +15,8 @@ class RecurlyApi {
 
   Future<String> getBillingsStats(String cookie, String subdomain) async {
     var urlBase = "https://$subdomain.$rootDomain";
-    return http.get("$urlBase/analytics/stats/transactions?interval=month", headers: { "cookie": cookie, "Content-Type": 'application/json'} )
+    return http.get("$urlBase/analytics/stats/transactions?interval=month",
+        headers: { "cookie": cookie, "Content-Type": 'application/json'} )
         .then((response) => response.body);
   }
 

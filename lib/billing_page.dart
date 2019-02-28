@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:recurly_analytics/redux.dart';
+import 'package:recurly_analytics/drawer.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
@@ -17,7 +18,7 @@ class DateStat {
   }
 }
 
-class HomePage extends StatelessWidget {
+class BillingPage extends StatelessWidget {
   static String tag = 'home-page';
 
   List<DateStat> parseResponse(String response) {
@@ -91,26 +92,7 @@ class HomePage extends StatelessWidget {
           ),
           backgroundColor: Colors.white,
           body: body,
-          drawer: new Drawer(
-            child: new ListView(
-              children: <Widget> [
-                new DrawerHeader(child: new Text("Header")),
-                new ListTile(
-                  title: new Text("Billings"),
-                  onTap: () {
-                    vm.onTap(GetStatsAction());
-                  },
-                ),
-                new Divider(),
-                new ListTile(
-                  title: new Text("MRR"),
-                  onTap: () {
-                    vm.onTap(GetMRRAction());
-                  },
-                ),
-              ]
-            )
-          ),
+          drawer: new RecurlyDrawer(vm: vm),
         );
       }
     );
