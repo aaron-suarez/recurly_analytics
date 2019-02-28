@@ -27,7 +27,12 @@ class MRRPage extends StatelessWidget {
 
     return jsonResponse.map((element) {
       final date = element['date'];
-      final double usdPaymentAmount = element['currencies']['USD']['amount'];
+      var currenciesElement = element['currencies'];
+
+      double usdPaymentAmount = 0;
+      if (currenciesElement != [] && currenciesElement != null) {
+        usdPaymentAmount = currenciesElement['USD']['amount'];
+      }
 
       return new DateStat(date, usdPaymentAmount);
     }).toList();
