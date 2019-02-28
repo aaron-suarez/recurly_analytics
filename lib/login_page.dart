@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:recurly_analytics/home_page.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
 import 'package:recurly_analytics/redux.dart';
 
 class LoginPage extends StatelessWidget {

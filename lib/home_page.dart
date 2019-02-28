@@ -48,6 +48,21 @@ class HomePage extends StatelessWidget {
           );
       },
       builder: (BuildContext context, HomeViewModel vm) {
+
+        if (vm.state.stats == null || vm.state.stats == "") {
+          // loading screen
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Billings (loading)'),
+            ),
+            backgroundColor: Colors.white,
+            body: Align(
+              child: new CircularProgressIndicator()
+            )
+          );
+
+        }
+
         List<DateStat> stats = parseResponse(vm.state.stats);
 
         if (stats.length > 6) {
