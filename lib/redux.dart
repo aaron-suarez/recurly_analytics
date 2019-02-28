@@ -127,6 +127,7 @@ class AppMiddleware implements MiddlewareClass<AppState> {
       _operation = CancelableOperation.fromFuture(api
           .getBillingsStats(store.state.cookie, store.state.subdomain)
           .then((result) => store..dispatch(HandleStatsAction(result)))
+          .then((result) => store..dispatch(NavigateToAction.replace("/home")))
           .catchError((e, s) => store..dispatch(ErrorAction())));
     }
 

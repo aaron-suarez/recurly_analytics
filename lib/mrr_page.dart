@@ -38,7 +38,7 @@ class MRRPage extends StatelessWidget {
       converter: (store) {
           return MRRViewModel(
             state: store.state,
-            onTap: () => store.dispatch(GetMRRAction())
+            onTap: (action) => store.dispatch(action)
           );
       },
       builder: (BuildContext context, MRRViewModel vm) {
@@ -98,14 +98,14 @@ class MRRPage extends StatelessWidget {
                 new ListTile(
                   title: new Text("Billings"),
                   onTap: () {
-                    vm.onTap();
+                    vm.onTap(GetStatsAction());
                   },
                 ),
                 new Divider(),
                 new ListTile(
                   title: new Text("MRR"),
                   onTap: () {
-                    vm.onTap();
+                    vm.onTap(GetMRRAction());
                   },
                 ),
               ]
@@ -119,7 +119,7 @@ class MRRPage extends StatelessWidget {
 
 class MRRViewModel {
   final AppState state;
-  final void Function() onTap;
+  final void Function(dynamic action) onTap;
 
   MRRViewModel({this.state, this.onTap});
 }

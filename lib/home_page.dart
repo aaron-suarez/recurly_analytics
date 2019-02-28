@@ -38,7 +38,7 @@ class HomePage extends StatelessWidget {
       converter: (store) {
           return HomeViewModel(
             state: store.state,
-            onTap: () => store.dispatch(GetMRRAction())
+            onTap: (action) => store.dispatch(action)
           );
       },
       builder: (BuildContext context, HomeViewModel vm) {
@@ -98,14 +98,14 @@ class HomePage extends StatelessWidget {
                 new ListTile(
                   title: new Text("Billings"),
                   onTap: () {
-                    vm.onTap();
+                    vm.onTap(GetStatsAction());
                   },
                 ),
                 new Divider(),
                 new ListTile(
                   title: new Text("MRR"),
                   onTap: () {
-                    vm.onTap();
+                    vm.onTap(GetMRRAction());
                   },
                 ),
               ]
@@ -119,7 +119,7 @@ class HomePage extends StatelessWidget {
 
 class HomeViewModel {
   final AppState state;
-  final void Function() onTap;
+  final void Function(dynamic action) onTap;
 
   HomeViewModel({this.state, this.onTap});
 }
