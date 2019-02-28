@@ -44,7 +44,8 @@ class HomePage extends StatelessWidget {
     return new StoreConnector<AppState, HomeViewModel>(
       converter: (store) {
           return HomeViewModel(
-            state: store.state
+            state: store.state,
+            onTap: () => store.dispatch(GetMRRAction())
           );
       },
       builder: (BuildContext context, HomeViewModel vm) {
@@ -97,6 +98,26 @@ class HomePage extends StatelessWidget {
           ),
           backgroundColor: Colors.white,
           body: body,
+          drawer: new Drawer(
+            child: new ListView(
+              children: <Widget> [
+                new DrawerHeader(child: new Text("Header")),
+                new ListTile(
+                  title: new Text("Billings"),
+                  onTap: () {
+                    vm.onTap();
+                  },
+                ),
+                new Divider(),
+                new ListTile(
+                  title: new Text("MRR"),
+                  onTap: () {
+                    vm.onTap();
+                  },
+                ),
+              ]
+            )
+          ),
         );
       }
     );
@@ -105,6 +126,7 @@ class HomePage extends StatelessWidget {
 
 class HomeViewModel {
   final AppState state;
+  final void Function() onTap;
 
-   HomeViewModel({this.state});
+  HomeViewModel({this.state, this.onTap});
 }

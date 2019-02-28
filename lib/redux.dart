@@ -48,6 +48,7 @@ class GetCookieAction {
 }
 
 class GetStatsAction {}
+class GetMRRAction {}
 
 class LoadingAction {}
 
@@ -123,8 +124,15 @@ class AppMiddleware implements MiddlewareClass<AppState> {
     }
 
     if (action is GetStatsAction) {
-      _operation =CancelableOperation.fromFuture(api
-          .getStats(store.state.cookie, store.state.subdomain)
+      _operation = CancelableOperation.fromFuture(api
+          .getBillingsStats(store.state.cookie, store.state.subdomain)
+          .then((result) => store..dispatch(HandleStatsAction(result)))
+          .catchError((e, s) => store..dispatch(ErrorAction())));
+    }
+
+    if (action is GetMRRAction) {
+      _operation = CancelableOperation.fromFuture(api
+          .getBillingsStats(store.state.cookie, store.state.subdomain)
           .then((result) => store..dispatch(HandleStatsAction(result)))
           .catchError((e, s) => store..dispatch(ErrorAction())));
     }
