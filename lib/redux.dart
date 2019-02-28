@@ -11,7 +11,7 @@ class AppState {
   final String cookie;
   final bool hasError;
   final bool isLoading;
-  final Map stats;
+  final String stats;
 
   AppState({
     this.subdomain,
@@ -21,13 +21,18 @@ class AppState {
     this.isLoading = false
   });
 
-  factory AppState.initial() => new AppState(cookie: "", stats: new Map());
+  factory AppState.initial() => new AppState(cookie: "", stats: "");
 
   factory AppState.loading() => AppState(isLoading: true);
 
   factory AppState.error() => AppState(hasError: true);
 
   factory AppState.handleCookie(String cookie, String subdomain) => AppState(cookie: cookie, subdomain: subdomain, isLoading: false);
+
+  @override
+	String toString() {
+		return 'AppState{isLoading: $isLoading, subdomain: $subdomain, cookie: $cookie, hasError: $hasError, stats: $stats}';
+	}
 }
 
 // actions
@@ -56,7 +61,7 @@ class HandleCookieAction {
 }
 
 class HandleStatsAction {
-  final Map stats;
+  final String stats;
 
   HandleStatsAction(this.stats);
 }
@@ -76,7 +81,9 @@ AppState _onError(AppState state, ErrorAction action) => AppState.error();
 
 AppState _onReturnCookie(AppState state, HandleCookieAction action) => AppState.handleCookie(action.cookie, action.subdomain);
 
-AppState _onReturnStats(AppState state, HandleStatsAction action) => AppState(cookie: state.cookie, stats: action.stats, isLoading: false);
+AppState _onReturnStats(AppState state, HandleStatsAction action) {
+  return AppState(cookie: state.cookie, stats: action.stats, isLoading: false);
+}
 
 // middleware
 
@@ -102,16 +109,24 @@ class AppMiddleware implements MiddlewareClass<AppState> {
 
         print("dispatched getCookieAction");
 
-        // Instead of a simple Future, we'll use a CancellableOperation from the
+        // Instead of a simple Future, we'll use a CancelableOperation from the
         // `async` package. This will allow us to cancel the previous operation
         // if a new Search term comes in. This will prevent us from
         // accidentally showing stale results.
         _operation = CancelableOperation.fromFuture(api
             .getToken(action.email, action.password)
             .then((result) => store..dispatch(HandleCookieAction(result['cookie'], result['subdomain'])))
+            .then((result) => store..dispatch(GetStatsAction()))
             .then((result) => store..dispatch(NavigateToAction.replace("/home")))
             .catchError((e, s) => store..dispatch(ErrorAction())));
       });
+    }
+
+    if (action is GetStatsAction) {
+      _operation =CancelableOperation.fromFuture(api
+          .getStats(store.state.cookie, store.state.subdomain)
+          .then((result) => store..dispatch(HandleStatsAction(result)))
+          .catchError((e, s) => store..dispatch(ErrorAction())));
     }
 
     // Make sure to forward actions to the next middleware in the chain!
