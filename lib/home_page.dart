@@ -16,7 +16,9 @@ class HomePage extends StatefulWidget {
 class HomePageDataState extends State<HomePage> {
   List list = List();
   String json_decoded;
-  String url = "https://jsonplaceholder.typicode.com/posts";
+  String url = "https://jsonplaceholder.typicode.com/posts/1";
+  String mrr_url = "https://unbounce.recurly.com/analytics/stats/mrr/total";
+  String kpi_url = "https://unbounce.recurly.com/analytics/stats/mrr/kpis";
   var isLoading = false;
 
   _fetchData() async {
@@ -28,19 +30,22 @@ class HomePageDataState extends State<HomePage> {
     await http.get(url);
     if (response.statusCode == 200) {
       print("**********************");
+      print(response.request);
+      print(response.statusCode);
+      print(response.body);
       print(json.decode(response.body));
       print("**********************");
       try {
-        list = json.decode(response.body) as List;
+//        list = json.decode(response.body) as List;
       } catch (e) {
-        list.add(json.decode(response.body));
+//        list.add(json.decode(response.body));
       };
 
       setState(() {
         isLoading = false;
       });
     } else {
-      throw Exception('Failed to load photos');
+      throw Exception('Failed to load data');
     }
   }
 
@@ -52,7 +57,6 @@ class HomePageDataState extends State<HomePage> {
     return responseMap;
   }
 
-  String url = 'https://jsonplaceholder.typicode.com/posts';
 
   @override
   Widget build(BuildContext context) {
@@ -67,26 +71,6 @@ class HomePageDataState extends State<HomePage> {
           padding: EdgeInsets.all(8.0),
           child: Text(
             'Some Graphs Here',
-            style: TextStyle(fontSize: 16.0, color: Colors.black45),
-          ),
-        );
-        final cookie = "cookieString";
-        final urlBase = "urlBaseString";
-        final responseMap = {
-          'kpis': "Monster",
-          'graph_json': "Truck"
-        };
-        final kpis = Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-            responseMap['kpis'],
-            style: TextStyle(fontSize: 16.0, color: Colors.black45),
-          ),
-        );
-        final graph_json = Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-            responseMap['graph_json'],
             style: TextStyle(fontSize: 16.0, color: Colors.black45),
           ),
         );
@@ -111,9 +95,6 @@ class HomePageDataState extends State<HomePage> {
           child: Column(
             children: <Widget>[
               lorem,
-              kpiButton,
-              kpis,
-              graph_json,
             ],
           ),
         );
@@ -142,12 +123,12 @@ class HomePageDataState extends State<HomePage> {
                 return ListTile(
                   contentPadding: EdgeInsets.all(10.0),
                   title: new Text(list[index]['title']),
-                  trailing: new Image.network(
-                    list[index]['thumbnailUrl'],
-                    fit: BoxFit.cover,
-                    height: 40.0,
-                    width: 40.0,
-                  ),
+//                  trailing: new Image.network(
+////                    list[index]['thumbnailUrl'],
+////                    fit: BoxFit.cover,
+//                    height: 40.0,
+//                    width: 40.0,
+//                  ),
                 );
               }),
         );
