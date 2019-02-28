@@ -80,11 +80,11 @@ AppState _onLoad(AppState state, LoadingAction action) => AppState.loading();
 
 AppState _onError(AppState state, ErrorAction action) => AppState.error();
 
-AppState _onReturnCookie(AppState state, HandleCookieAction action) => AppState.handleCookie(action.cookie, action.subdomain);
+AppState _onReturnCookie(AppState state, HandleCookieAction action) =>
+  AppState.handleCookie(action.cookie, action.subdomain);
 
-AppState _onReturnStats(AppState state, HandleStatsAction action) {
-  return AppState(cookie: state.cookie, stats: action.stats, isLoading: false);
-}
+AppState _onReturnStats(AppState state, HandleStatsAction action) =>
+  AppState(cookie: state.cookie, stats: action.stats, subdomain: state.subdomain, isLoading: false);
 
 // middleware
 
